@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        height: 100vh;
+      }
+      iframe {
+        outline: red thin solid;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      var ifrm = document.createElement("iframe");
+      ifrm.setAttribute("width", "100%");
+      ifrm.setAttribute("height", "100%");
+      ifrm.setAttribute("frameborder", "0");
+      ifrm.setAttribute(
+        "src",
+        "localhost:8000" + window.location.pathname + window.location.search
+      );
+      document.currentScript.before(ifrm);
+      window.addEventListener("sveltekit:start", function (e) {
+        console.log("sveltekit:start", e);
+      });
+      window.addEventListener(
+        "message",
+        (event) => {
+          if (
+            event.data.type === undefined ||
+            !event.data.type.startsWith("svelte-kit:")
+          )
+            return;
+          if (event.data.type.endsWith("navigated")) {
+            const { pathname, search } = event.data.payload;
+            history.replaceState({}, "", pathname + search);
+          }
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
